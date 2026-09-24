@@ -306,13 +306,11 @@ Auth + Storage) + **Resend** (e-mail) + **Stripe/Asaas** (cobrança, quando ativ
 | `NEXT_PUBLIC_SUPABASE_URL` | todas | sim | URL do projeto Supabase |
 | `NEXT_PUBLIC_SUPABASE_ANON_KEY` | todas | sim | chave pública (RLS aplica) |
 | `SUPABASE_SERVICE_ROLE_KEY` | servidor | sim p/ cron/seed | **secreta** — nunca expor no browser |
-| `TENANT_ID_DEFAULT` | dev | não | tenant demo local |
-| `TZ_EMPRESA` | todas | sim | ex.: `America/Bahia` (cálculos RN7) |
+| `TZ_EMPRESA` | servidor/cron | sim | ex.: `America/Bahia` — o servidor e o cron devem rodar neste fuso (RN7) |
 | `RESEND_API_KEY` | prod/cron | sim p/ e-mail | Resend (ou Postmark) |
 | `ALERTA_FROM` | prod/cron | sim p/ e-mail | remetente verificado |
 | `ALERTA_DESTINATARIOS` | cron | não | lista padrão separada por vírgula |
 | `STRIPE_SECRET_KEY` / `ASAAS_API_KEY` | prod | ao ativar cobrança | gateway de plano fixo |
-| `CRON_HOUR` | cron | não | padrão `6` (06:00 fuso empresa) |
 | `SENTRY_DSN` | prod | recomendado | observabilidade |
 
 ---

@@ -1,6 +1,6 @@
 # SaaS de Controle de Mídia em Ônibus
 
-Multiempresa a partir da planilha **Frota.xlsx** da **Expresso Vitória** (piloto). Especificação em `docs/ESPECIFICACAO.md`, banco em `supabase/schema_saas_midia_onibus.sql`, protótipo de referência preservado na raiz do histórico.
+Multiempresa a partir da planilha **Frota.xlsx** da **Expresso Vitória** (piloto). Especificação em `docs/ESPECIFICACAO.md`, banco em `supabase/schema_saas_midia_onibus.sql`; dados e lógica do protótipo transcritos em `src/data/frota.ts` e `src/components/PainelClient.tsx`.
 
 ## Stack
 Next.js 14 (App Router) + TypeScript + Tailwind + Zod + Supabase/Postgres (RLS) + Resend (e-mail) + xlsx.

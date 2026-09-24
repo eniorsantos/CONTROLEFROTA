@@ -46,7 +46,7 @@ describe("alertas (aceite #3)", () => {
   });
 });
 
-describe("isolamento (aceite #4)", () => {
+describe("isolamento (aceite #4 — simulação; prova real exige banco com RLS)", () => {
   it("RLS filtra por tenant — simulação", () => {
     const linhas = [
       { tenant_id: "A", n: 1 },

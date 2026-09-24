@@ -5,10 +5,10 @@ export interface Alerta { para: string[]; assunto: string; corpo: string; onibus
 
 export function alertasVencimento(rows: OnibusPainel[], destinatarios: string[]): Alerta[] {
   const out: Alerta[] = [];
+  // 1 alerta por ônibus: 15/7/0 dias aqui; vencidos (x<0) só no bloco de atraso abaixo.
   for (const r of rows) {
-    if (r.x === null) continue;
-    if (![15, 7, 0].includes(r.x) && !(r.x < 0)) continue;
-    const rot = r.x < 0 ? `VENCIDO há ${Math.abs(r.x)} dias — retirar` : r.x === 0 ? "vence HOJE" : `vence em ${r.x} dias`;
+    if (r.x === null || r.x < 0 || ![15, 7, 0].includes(r.x)) continue;
+    const rot = r.x === 0 ? "vence HOJE" : `vence em ${r.x} dias`;
     out.push({
       para: destinatarios,
       assunto: `Mídia ${rot} — ônibus ${r.n} (${r.m || "sem anunciante"})`,
@@ -22,7 +22,7 @@ export function alertasVencimento(rows: OnibusPainel[], destinatarios: string[])
     out.push({
       para: destinatarios,
       assunto: `Retirada em atraso — ônibus ${r.n}`,
-      corpo: `Ônibus ${r.n} venceu em ${r.f}. Gerar OS de retirada.`,
+      corpo: `Ônibus ${r.n} venceu há ${Math.abs(r.x ?? 0)} dias em ${r.f}. Gerar OS de retirada.`,
       onibus: r.n,
       dias: r.x
     });

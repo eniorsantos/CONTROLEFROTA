@@ -15,15 +15,11 @@ function lum(hex: string): number {
 /** Escolhe texto claro/escuro sobre a cor e avisa se abaixo de AA (4.5:1). */
 export function contraste(corFundo: string): { texto: "#ffffff" | "#17212b"; ratio: number; aa: boolean } {
   const l = lum(corFundo);
-  const rClaro = 1.05 / (l + 0.05);
-  const rEscuro = (l + 0.05) / 0.05;
-  // compara fundo vs branco e fundo vs #17212b (lum aprox 0.015)
-  const lEsc = lum("#17212b");
+  // branco (lum 1) vs #17212b
   const ratioClaro = (Math.max(l, 1) + 0.05) / (Math.min(l, 1) + 0.05);
-  const ratioEscuro = (Math.max(l, lEsc) + 0.05) / (Math.min(l, lEsc) + 0.05);
+  const ratioEscuro = (Math.max(l, lum("#17212b")) + 0.05) / (Math.min(l, lum("#17212b")) + 0.05);
   const texto = ratioClaro >= ratioEscuro ? "#ffffff" : "#17212b";
   const ratio = Math.max(ratioClaro, ratioEscuro);
-  void rClaro; void rEscuro;
   return { texto, ratio: Math.round(ratio * 100) / 100, aa: ratio >= 4.5 };
 }
 

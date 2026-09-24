@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import Link from "next/link";
 import "./globals.css";
 
 export const metadata: Metadata = {
@@ -29,7 +30,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
               ["/relatorios", "Relatórios"],
               ["/configuracoes", "Configurações"]
             ].map(([h, l]) => (
-              <a key={h} href={h} style={{ color: "var(--ink)" }}>{l}</a>
+              <Link key={h} href={h} style={{ color: "var(--ink)" }}>{l}</Link>
             ))}
           </div>
         </nav>

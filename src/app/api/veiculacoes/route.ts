@@ -1,7 +1,6 @@
 import { NextResponse } from "next/server";
 import { z } from "zod";
 import { fimVeiculacao } from "@/lib/vencimentos";
-import { podeAgendar } from "@/lib/sobreposicao";
 
 const Schema = z.object({
   posicao_id: z.string().uuid().or(z.string().min(1)),

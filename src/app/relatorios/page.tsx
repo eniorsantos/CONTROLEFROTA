@@ -1,8 +1,9 @@
 import { FROTA } from "@/data/frota";
+import { montarPainel } from "@/lib/painel";
 import { paraCSV } from "@/lib/exportacao";
 
 export default function RelatoriosPage() {
-  const csv = paraCSV(FROTA.map((r) => ({ ...r, s: "Em campanha" as const, x: 10, code: "", ads: [], m: r.t || r.b || r.c, q: "" })));
+  const csv = paraCSV(montarPainel(FROTA));
   return (
     <main style={{ maxWidth: 900, margin: "0 auto", padding: "20px 16px" }}>
       <h1 className="font-cond" style={{ fontSize: 28 }}>Relatórios (RF12/RF13)</h1>

@@ -1,5 +1,5 @@
 "use client";
-import { useMemo, useState, useEffect } from "react";
+import { useMemo, useState, useEffect, Fragment } from "react";
 import { FROTA } from "@/data/frota";
 import { montarPainel, resumoPainel, ocupacaoPorPosicao, proximosAVencer } from "@/lib/painel";
 import { fmtBR } from "@/lib/vencimentos";
@@ -138,8 +138,8 @@ export default function PainelClient() {
           </tr></thead>
           <tbody>
             {v.map((r) => (
-              <>
-                <tr key={r.n}>
+              <Fragment key={r.n}>
+                <tr>
                   <td className="font-cond" style={{ fontSize: 17, padding: "7px 8px", borderTop: "1px solid var(--line)" }}>{r.n}</td>
                   <td style={{ padding: "7px 8px", borderTop: "1px solid var(--line)" }}>{r.l || "—"}</td>
                   <td style={{ padding: "7px 8px", borderTop: "1px solid var(--line)" }}>
@@ -157,7 +157,7 @@ export default function PainelClient() {
                 {r.ads.length > 1 && open.has(r.n) ? (
                   <tr><td></td><td colSpan={7} style={{ background: "var(--bg)", fontSize: 13, lineHeight: 1.9 }}>{r.ads.slice(1).map((a) => <div key={a.pos + a.nome}><span style={{ background: "var(--line)", borderRadius: 4, padding: "1px 6px", fontSize: 12, marginRight: 4 }}>{a.pos}</span>{a.nome} · retira {fmtBR(a.f)}</div>)}</td></tr>
                 ) : null}
-              </>
+              </Fragment>
             ))}
           </tbody>
         </table>

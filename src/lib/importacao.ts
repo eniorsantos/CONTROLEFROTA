@@ -58,9 +58,9 @@ export function previaImportacao(linhas: LinhaBruta[], mapa = { B: "B", C: "C", 
     if (temCliente && !d) erros.push({ linha: idx + 1, campo: "J", msg: "Linha com cliente mas sem data de colocação." });
     if (!Number.isFinite(nro)) return;
     validas.push({
-      n: nro, l: linha || (linha === "" ? "reserva" : ""),
+      n: nro, l: linha,
       t, b: back, p: painel, i: "", r: "",
-      c: cli, d, e: [30, 60, 90].includes(e) ? e : e, f
+      c: cli, d, e, f
     });
   });
   // trata "reserva" como status reserva (sinalizado na linha)

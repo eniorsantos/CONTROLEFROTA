@@ -7,7 +7,8 @@ dados, regras, telas, API, branding, alertas, testes, build e aceite.
 > `README.md` (resumo executivo) ·
 > `docs/ESPECIFICACAO.md` (regras executáveis) ·
 > `docs/IMPLANTACAO_LOCAL_E_NUVEM.md` (instalação, operação e deploy).
-> Protótipo de referência: `frota-saas-prototipo` (HTML original da conversa).
+> Protótipo de referência (`frota-saas-prototipo`, HTML da conversa): dados transcritos em
+> `src/data/frota.ts`, lógica e layout reproduzidos em `src/components/PainelClient.tsx`.
 
 ---
 
@@ -107,14 +108,14 @@ Multitenant: toda tabela de negócio tem `tenant_id`; RLS isola empresas.
 | RN3/RF7 | semáforo: vencido (fim<hoje), vence em 7 dias, em campanha, sem data, disponível (sem anunciante); sempre com texto, nunca só cor | `vencimentos.situacao` | vencimentos.test |
 | RN5 | renovar = nova veiculação encadeada (início = fim anterior), histórico preservado | `sobreposicao.encadearRenovacao` | sobreposicao.test |
 | RN6 | baixado fora da disponibilidade, histórico mantido | `painel.disponibilidade` | — (lógica + SQL) |
-| RN7 | datas/fuso da empresa | `TZ_EMPRESA`, `startOfToday` | — |
+| RN7 | datas/fuso da empresa | `startOfToday` (data local) + `TZ_EMPRESA` como TZ do servidor/cron (leitura explícita da var no código é pendência) | — |
 | +N §4.2 | linha mostra anunciante que vence primeiro + posição; `+N` expande demais (posição + retirada); empate: traseira→backseat→institucional | `vencimentos.montarPainel` + `PainelClient` | — |
 | RF8 | disponibilidade por linha/posição/período | `painel.disponibilidade` + `GET /api/disponibilidade` | — |
 | RF9 | alertas 15/7/0 dias + atraso retirada | `alertas.alertasVencimento` + `cron-alertas.ts` | regras.test (aceite #3) |
 | RF11/§6.4 | importação mapa B–L, ignora `.`/`o`, `reserva`, sugere junção (Bahiaha/Bahia) | `importacao.previaImportacao/parecidos` | regras.test |
 | §5 | branding: hex, contraste AA auto, SVG sanitizado, logo ≤300KB | `branding.*` + `PUT/POST /api/configuracoes/aparencia` | regras.test (aceite #5) |
 | RF12/13 | CSV + HTML imprimível (PDF) com filtros; relatório anunciante | `exportacao.paraCSV/paraHTMLImpressao` | — |
-| Isolamento | RLS por `tenant_id` (empresa nunca vê outra) | policies no SQL + filtro `x-tenant-id` | regras.test (aceite #4) |
+| Isolamento | RLS por `tenant_id` (empresa nunca vê outra) | policies no SQL + filtro `x-tenant-id` | simulação em regras.test (aceite #4); prova real exige banco com RLS |
 
 Perfis (§2): admin (tudo: usuários, aparência, plano, cobrança) · comercial
 (anunciantes/campanhas/veiculações/disponibilidade) · operacao (OS/fotos/baixa) ·
