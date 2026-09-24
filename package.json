@@ -1,0 +1,36 @@
+{
+  "name": "saas-midia-onibus",
+  "version": "0.1.0",
+  "private": true,
+  "description": "SaaS multiempresa de controle de mídia em ônibus — Expresso Vitória (piloto)",
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start",
+    "lint": "next lint",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "cron:alertas": "tsx scripts/cron-alertas.ts"
+  },
+  "dependencies": {
+    "@supabase/supabase-js": "^2.44.0",
+    "date-fns": "^3.6.0",
+    "next": "14.2.5",
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1",
+    "resend": "^3.4.0",
+    "xlsx": "^0.18.5",
+    "zod": "^3.23.8"
+  },
+  "devDependencies": {
+    "@types/node": "^20.14.0",
+    "@types/react": "^18.3.3",
+    "@types/react-dom": "^18.3.0",
+    "autoprefixer": "^10.4.19",
+    "postcss": "^8.4.39",
+    "tailwindcss": "^3.4.6",
+    "tsx": "^4.16.2",
+    "typescript": "^5.5.3",
+    "vitest": "^2.0.5"
+  }
+}
