@@ -133,7 +133,7 @@ leitura (consulta).
 | `/os` | RF10 | mobile-first: anexo de foto (câmera), concluir exige foto (400 sem `foto_url`) |
 | `/importacao` | RF11 | upload .xlsx/.xls/.csv (lê via `xlsx`, cabeçalho configurável), datas texto/serial/Date, prévia com erros + junções + amostra, envio e confirmação (`POST /api/importacoes`, `POST .../:id/confirmar`) |
 | `/relatorios` | RF12/RF13 | 3 abas: vencidos (por atraso), por formato (4 tabelas + filtro formato/busca), livres (carros + vagas por formato); cada uma com CSV e PDF (`/api/exportar?tipo=&rel=[&pos=&q=]`) |
-| `/configuracoes` | §5 + planos | cores com validação hex + contraste AA ao vivo, teste de sanitização SVG, tabela de planos fixos |
+| `/configuracoes` | §5 | nome de exibição; cores de todas as áreas (destaque, tabela, fundo, cartão, texto, secundário, bordas) com contraste WCAG AA ao vivo — situação (verde/âmbar/vermelho) fixa; logo PNG/JPG/SVG ≤300 KB com sanitização + prévia; salvar vale p/ toda empresa (`tenant_branding`, aplicado via `AplicarTema`); restaurar padrão |
 
 Design system (§4.3): tokens `--y --th --bg --card --ink --mut --line --ok
 --warn --bad --none`, claro/escuro (situação nunca customizável), Barlow
