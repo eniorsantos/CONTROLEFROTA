@@ -1,5 +1,6 @@
 "use client";
 import { useState } from "react";
+import Guarda from "@/components/Guarda";
 import { previaImportacao, type PreviaImport, type LinhaBruta } from "@/lib/importacao";
 import { fmtBR } from "@/lib/vencimentos";
 
@@ -64,6 +65,7 @@ export default function ImportPage() {
   }
 
   return (
+    <Guarda aba="importacao">
     <main style={{ maxWidth: 1000, margin: "0 auto", padding: "20px 16px" }}>
       <h1 className="font-cond" style={{ fontSize: 28 }}>Importação (RF11)</h1>
       <p style={{ color: "var(--mut)" }}>
@@ -111,5 +113,6 @@ export default function ImportPage() {
         </div>
       ) : null}
     </main>
+    </Guarda>
   );
 }

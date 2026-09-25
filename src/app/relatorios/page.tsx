@@ -1,5 +1,8 @@
 "use client";
 import { useMemo, useState, useEffect } from "react";
+import Guarda from "@/components/Guarda";
+import { FROTA } from "@/data/frota";
+import type { LinhaPrototipo } from "@/lib/tipos";
 import { carregarBase, EVENTO_NUVEM } from "@/lib/fonte";
 import { montarPainel, resumoPainel } from "@/lib/painel";
 import { relVencidos, relPorFormato, relLivres, posicoesLivres } from "@/lib/relatorios";
@@ -12,13 +15,15 @@ const td = { padding: "7px 8px", borderTop: "1px solid var(--line)" };
 
 export default function RelatoriosPage() {
   const [aba, setAba] = useState<Aba>("vencidos");
-  const [ver, setVer] = useState(0);
+  // Base começa no seed (igual no servidor) e carrega a nuvem após o mount.
+  const [base, setBase] = useState<LinhaPrototipo[]>(FROTA);
   useEffect(() => {
-    const f = () => setVer((v) => v + 1);
+    setBase(carregarBase());
+    const f = () => setBase(carregarBase());
     window.addEventListener(EVENTO_NUVEM, f);
     return () => window.removeEventListener(EVENTO_NUVEM, f);
   }, []);
-  const rows = useMemo(() => montarPainel(carregarBase()), [ver]);
+  const rows = useMemo(() => montarPainel(base), [base]);
   const resumo = resumoPainel(rows);
   const venc = useMemo(() => relVencidos(rows), [rows]);
   const formatos = useMemo(() => relPorFormato(rows), [rows]);
@@ -38,6 +43,7 @@ export default function RelatoriosPage() {
   const exp = (t: "csv" | "pdf", rel: string) => `/api/exportar?tipo=${t}&rel=${rel}`;
 
   return (
+    <Guarda aba="relatorios">
     <main style={{ maxWidth: 1100, margin: "0 auto", padding: "20px 16px 48px" }}>
       <h1 className="font-cond" style={{ fontSize: 28, margin: "0 0 4px" }}>Relatórios (RF12/RF13)</h1>
       <p style={{ color: "var(--mut)", marginTop: 0 }}>
@@ -120,5 +126,6 @@ export default function RelatoriosPage() {
         </section>
       ) : null}
     </main>
+    </Guarda>
   );
 }

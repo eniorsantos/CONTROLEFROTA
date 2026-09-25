@@ -117,15 +117,16 @@ Multitenant: toda tabela de negócio tem `tenant_id`; RLS isola empresas.
 | RF12/13 | CSV + HTML imprimível (PDF) com filtros; relatório anunciante | `exportacao.paraCSV/paraHTMLImpressao` | — |
 | Isolamento | RLS por `tenant_id` (empresa nunca vê outra) | policies no SQL + filtro `x-tenant-id` | simulação em regras.test (aceite #4); prova real exige banco com RLS |
 
-Perfis (§2): admin (tudo: usuários, aparência, plano, cobrança) · comercial
-(anunciantes/campanhas/veiculações/disponibilidade) · operacao (OS/fotos/baixa) ·
-leitura (consulta).
+Perfis (§2): admin (tudo) · comercial (painel/editar/frota/importação/relatórios) · operacao (painel/frota/os) ·
+leitura (painel/frota/relatórios). O admin ajusta perfil e abas por usuário em `/usuarios`
+(`membros.papel` + `membros.abas`, migration 0002); sem login as abas negam acesso; a navegação mostra só as abas permitidas.
 
 ## 6. Frontend — telas
 
 | Rota | Requisito | O que foi entregue |
 |---|---|---|
-| `/login` | §4.1.1 | e-mail+senha, recuperação, convite (texto + form cliente) |
+| `/login` | §4.1.1 | escolha de usuário demo (produção: e-mail/senha + `membros`); mostra papel |
+| `/usuarios` | controle de acesso | admin: lista, perfil, checkboxes de abas por usuário, voltar ao padrão, adicionar/remover; `Guarda` protege as páginas e `Nav` filtra o menu |
 | `/` Painel | §4.2 (fiel ao protótipo) | header (logo/nome/data/tema + personalizar), 5 KPIs clicáveis que filtram, ocupação por posição (barras + contagem), próximos 6 clicáveis, tabela Nº/linha/anunciante(`+N` acessível)/painel/colocação/período/retirada/situação+dias, busca livre, filtros situação/linha, ordenação por coluna, contador `N de 171`; estados vazio/erro previstos; sem ranking (decisão do cliente) |
 | `/editar` | edição inline | mesma base do Painel com Editar/Salvar/Cancelar por veículo (linha, 4 posições, colocação, período; retirada recalculada RN1; situação ao vivo), marca ● nos editados, Restaurar por linha + descartar tudo, rascunho em localStorage (produção: PATCH onibus/veiculacoes + RF15) |
 | `/frota` | RF1/RF2 | lista número/linha/status/situação mídia (171) |

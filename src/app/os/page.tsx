@@ -1,5 +1,6 @@
 "use client";
 import { useState, useMemo } from "react";
+import Guarda from "@/components/Guarda";
 import { FROTA } from "@/data/frota";
 
 export default function OSPage() {
@@ -38,6 +39,7 @@ export default function OSPage() {
   const inp = { padding: "8px 10px", border: "1px solid var(--line)", borderRadius: 6, background: "var(--card)", color: "var(--ink)", font: "inherit" as const };
 
   return (
+    <Guarda aba="os">
     <main style={{ maxWidth: 640, margin: "0 auto", padding: "20px 16px 48px" }}>
       <h1 className="font-cond" style={{ fontSize: 28, margin: "0 0 4px" }}>Ordens de serviço (RF10)</h1>
       <p style={{ color: "var(--mut)", marginTop: 0 }}>Geradas na instalação e na retirada. Versão de celular para campo: carro, data, cliente, foto e concluir.</p>
@@ -61,5 +63,6 @@ export default function OSPage() {
         {msg ? <p role="status" style={{ color: ok ? "var(--ok)" : undefined }}>{msg}</p> : null}
       </div>
     </main>
+    </Guarda>
   );
 }

@@ -1,13 +1,14 @@
 "use client";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { salvarBase, limparBase, autoLigado, definirAuto } from "@/lib/fonte";
 import type { LinhaPrototipo } from "@/lib/tipos";
 
 // Barra de sincronização com o Supabase: manual (Baixar/Enviar) + automática (toggle).
 export default function SyncBar({ dados }: { dados: LinhaPrototipo[] }) {
   const [msg, setMsg] = useState("");
-  const [auto, setAuto] = useState(autoLigado());
+  const [auto, setAuto] = useState(false);
   const [busy, setBusy] = useState(false);
+  useEffect(() => { setAuto(autoLigado()); }, []);
 
   async function baixar() {
     setBusy(true); setMsg("Baixando do Supabase…");

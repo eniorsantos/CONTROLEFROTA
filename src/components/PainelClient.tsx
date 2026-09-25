@@ -1,10 +1,11 @@
 "use client";
 import { useMemo, useState, useEffect, Fragment } from "react";
+import { FROTA } from "@/data/frota";
 import { carregarBase, EVENTO_NUVEM } from "@/lib/fonte";
 import SyncBar from "@/components/SyncBar";
 import { montarPainel, resumoPainel, ocupacaoPorPosicao, proximosAVencer } from "@/lib/painel";
 import { fmtBR } from "@/lib/vencimentos";
-import type { Semaforo } from "@/lib/tipos";
+import type { Semaforo, LinhaPrototipo } from "@/lib/tipos";
 
 const COR: Record<Semaforo, string> = {
   "Vencido": "var(--bad)",
@@ -17,13 +18,14 @@ const COR: Record<Semaforo, string> = {
 type SortK = "n" | "l" | "m" | "p" | "d" | "e" | "f" | "x";
 
 export default function PainelClient() {
-  const [ver, setVer] = useState(0);
+  // Base começa no seed (igual no servidor) e carrega a nuvem após o mount.
+  const [base, setBase] = useState<LinhaPrototipo[]>(FROTA);
   useEffect(() => {
-    const f = () => setVer((v) => v + 1);
+    setBase(carregarBase());
+    const f = () => setBase(carregarBase());
     window.addEventListener(EVENTO_NUVEM, f);
     return () => window.removeEventListener(EVENTO_NUVEM, f);
   }, []);
-  const base = useMemo(() => carregarBase(), [ver]);
   const rows = useMemo(() => montarPainel(base), [base]);
   const [q, setQ] = useState("");
   const [st, setSt] = useState("");

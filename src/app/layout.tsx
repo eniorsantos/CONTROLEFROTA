@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
-import Link from "next/link";
 import AplicarTema from "@/components/AplicarTema";
+import Nav from "@/components/Nav";
 import "./globals.css";
 
 export const metadata: Metadata = {
@@ -19,21 +19,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
       </head>
       <body>
         <AplicarTema />
-        <nav aria-label="Principal" style={{ borderBottom: "4px solid var(--y)", background: "var(--card)" }}>
-          <div style={{ maxWidth: 1200, margin: "0 auto", padding: "8px 16px", display: "flex", gap: 12, flexWrap: "wrap", fontSize: 14 }}>
-            {[
-              ["/", "Painel"],
-              ["/editar", "Editar"],
-              ["/frota", "Frota"],
-              ["/os", "Ordens de serviço"],
-              ["/importacao", "Importação"],
-              ["/relatorios", "Relatórios"],
-              ["/configuracoes", "Configurações"]
-            ].map(([h, l]) => (
-              <Link key={h} href={h} style={{ color: "var(--ink)" }}>{l}</Link>
-            ))}
-          </div>
-        </nav>
+        <Nav />
         {children}
       </body>
     </html>

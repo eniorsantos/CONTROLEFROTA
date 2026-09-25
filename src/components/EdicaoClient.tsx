@@ -1,5 +1,6 @@
 "use client";
-import { useMemo, useState, useEffect } from "react";
+import { useMemo, useState, useEffect, useRef } from "react";
+import { FROTA } from "@/data/frota";
 import { carregarBase, autoLigado, EVENTO_NUVEM } from "@/lib/fonte";
 import SyncBar from "@/components/SyncBar";
 import { montarPainel } from "@/lib/painel";
@@ -30,10 +31,12 @@ export default function EdicaoClient() {
   const [draft, setDraft] = useState<Draft>({ l: "", t: "", b: "", p: "", c: "", d: "", e: 30 });
   const [erro, setErro] = useState("");
   const [syncMsg, setSyncMsg] = useState("");
-  const [ver, setVer] = useState(0);
+  // Base começa no seed (igual no servidor) e carrega a nuvem após o mount.
+  const [baseSeed, setBaseSeed] = useState<LinhaPrototipo[]>(FROTA);
 
   useEffect(() => {
-    const f = () => setVer((v) => v + 1);
+    setBaseSeed(carregarBase());
+    const f = () => setBaseSeed(carregarBase());
     window.addEventListener(EVENTO_NUVEM, f);
     return () => window.removeEventListener(EVENTO_NUVEM, f);
   }, []);
@@ -44,14 +47,16 @@ export default function EdicaoClient() {
       if (s && typeof s === "object") setOver(s);
     } catch {}
   }, []);
+  // Não sobrescreve as edições salvas com {} na montagem.
+  const primeiro = useRef(true);
   useEffect(() => {
+    if (primeiro.current) { primeiro.current = false; return; }
     try { localStorage.setItem(LS_KEY, JSON.stringify(over)); } catch {}
   }, [over]);
 
   const base: LinhaPrototipo[] = useMemo(
-    () => carregarBase().map((r) => (over[r.n] ? { ...r, ...over[r.n] } : r)),
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-    [over, ver]
+    () => baseSeed.map((r) => (over[r.n] ? { ...r, ...over[r.n] } : r)),
+    [baseSeed, over]
   );
   const rows = useMemo(() => montarPainel(base), [base]);
   const filtradas = rows.filter((r) => !q || Object.values(r).join(" ").toLowerCase().includes(q.toLowerCase()));

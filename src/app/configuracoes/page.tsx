@@ -1,5 +1,6 @@
 "use client";
 import { useState, useEffect } from "react";
+import Guarda from "@/components/Guarda";
 import { contraste, sanitizarSVG, validarLogo } from "@/lib/branding";
 
 const PADRAO = {
@@ -84,6 +85,7 @@ export default function ConfigPage() {
   }
 
   return (
+    <Guarda aba="configuracoes">
     <main style={{ maxWidth: 860, margin: "0 auto", padding: "20px 16px 48px" }}>
       <h1 className="font-cond" style={{ fontSize: 28, margin: "0 0 4px" }}>Configurações · Aparência (§5)</h1>
       <p style={{ color: "var(--mut)", marginTop: 0 }}>Cores de todas as áreas + logo. Prévia ao vivo; ao salvar vale para toda a empresa (tabela <code>tenant_branding</code>).</p>
@@ -129,5 +131,6 @@ export default function ConfigPage() {
       </div>
       {msg ? <p role="status">{msg}</p> : null}
     </main>
+    </Guarda>
   );
 }

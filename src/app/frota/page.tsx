@@ -1,9 +1,11 @@
+import Guarda from "@/components/Guarda";
 import { FROTA } from "@/data/frota";
 import { montarPainel } from "@/lib/painel";
 
 export default function FrotaPage() {
   const rows = montarPainel(FROTA);
   return (
+    <Guarda aba="frota">
     <main style={{ maxWidth: 1200, margin: "0 auto", padding: "20px 16px" }}>
       <h1 className="font-cond" style={{ fontSize: 28 }}>Frota (RF1)</h1>
       <p style={{ color: "var(--mut)" }}>Número, linha, situação (ativo, reserva, manutenção, baixado). {rows.length} ônibus.</p>
@@ -18,5 +20,6 @@ export default function FrotaPage() {
         </table>
       </div>
     </main>
+    </Guarda>
   );
 }
