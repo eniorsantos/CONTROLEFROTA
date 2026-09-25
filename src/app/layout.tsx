@@ -25,7 +25,6 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
               ["/", "Painel"],
               ["/editar", "Editar"],
               ["/frota", "Frota"],
-              ["/veiculacoes", "Veiculações"],
               ["/os", "Ordens de serviço"],
               ["/importacao", "Importação"],
               ["/relatorios", "Relatórios"],

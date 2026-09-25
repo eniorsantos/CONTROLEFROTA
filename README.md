@@ -13,7 +13,7 @@ npm run dev            # http://localhost:3000
 ```
 
 ## Telas (§4.1)
-`/login` · `/` Painel (fiel ao protótipo §4.2) · `/editar` (edição inline por veículo) · `/frota` · `/veiculacoes` · `/os` (mobile-first, foto) · `/importacao` · `/relatorios` · `/configuracoes` (aparência + planos)
+`/login` · `/` Painel (fiel ao protótipo §4.2) · `/editar` (edição inline por veículo) · `/frota` · `/os` (mobile-first, foto) · `/importacao` · `/relatorios` · `/configuracoes` (aparência + planos)
 
 ## Regras implementadas
 - **RN1** fim = início + período (`fimVeiculacao`); **RN2** anti-sobreposição (`podeAgendar` + `EXCLUDE USING gist`); **RN5** renovar encadeia; **RN6** baixado fora da disponibilidade; **RF7** semáforo; **+N** com posição e retirada (§4.2); sem ranking (decisão cliente).

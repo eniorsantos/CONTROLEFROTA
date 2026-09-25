@@ -19,7 +19,7 @@ Navegador (Painel, Frota, OS mobile, Configurações)
    │ HTTPS
    ▼
 Next.js 14 App Router (Vercel ou localhost:3000)
-   ├─ Páginas: /login / (painel) /editar /frota /veiculacoes
+   ├─ Páginas: /login / (painel) /editar /frota
    │           /os /importacao /relatorios /configuracoes
    ├─ API: /api/onibus /api/veiculacoes /api/disponibilidade /api/painel/resumo
    │        /api/os /api/importacoes /api/configuracoes/aparencia
@@ -215,7 +215,7 @@ Roteiro de validação (espelha o aceite §9):
 | # | O que fazer | Esperado |
 |---|---|---|
 | 1 | Abrir `/` | 171 ônibus; KPIs; ocupação; próximos 6; tabela com busca/filtros/ordenação |
-| 2 | `/veiculacoes`: criar 2 anunciantes no mesmo ônibus/posição com períodos diferentes; tentar um 3º sobreposto | 3º bloqueado (RN2; em prod o banco retorna 409 via `EXCLUDE`) |
+| 2 | `npx vitest run tests/sobreposicao.test.ts`: 2 veiculações encadeadas + 3ª sobreposta | 3ª recusada (RN2; no banco o `EXCLUDE` retorna 409) |
 | 3 | `npm run cron:alertas` ou `GET /api/alertas/previa` | alertas 15/7/0 dias + atraso retirada listados |
 | 4 | Trocar `x-tenant-id` / logar com outra empresa | nenhum dado cruzado (RLS) |
 | 5 | `/configuracoes`: trocar cor + logo | reflexo imediato no Painel/login/PDF; aviso se contraste < AA |
@@ -232,14 +232,12 @@ operacao (OS/fotos/baixa) · leitura (só consulta).
 1. **Painel (`/`)**: semáforo diário — `Vencido` (retirar + OS), `Vence em 7 dias`
    (renovar/negociar), `Em campanha`, `Sem data`, `Disponível` (vender).
    KPIs filtram a tabela; `+N` expande os demais anunciantes do ônibus.
-2. **Editar (`/editar`)**: ajuste direto por veículo (linha, posições, colocação, período) com retirada recalculada; use a SyncBar para enviar ao Supabase.
-3. **Veiculações (`/veiculacoes`)**: fim sempre calculado (início + período);
-   renovar encadeia (início = fim anterior) preservando histórico/auditoria.
-4. **OS (`/os`)**: instalação e retirada geram OS com prazo; campo conclui com
+2. **Editar (`/editar`)**: ajuste direto por veículo (linha, posições, colocação, período) com retirada recalculada e validação de sobreposição (RN1/RN2); renovar encadeia (início = fim anterior) preservando histórico/auditoria; use a SyncBar para enviar ao Supabase.
+3. **OS (`/os`)**: instalação e retirada geram OS com prazo; campo conclui com
    foto pelo celular; atraso gera alerta.
-5. **Relatórios (`/relatorios`)**: CSV/PDF com filtros aplicados; relatório do
+4. **Relatórios (`/relatorios`)**: CSV/PDF com filtros aplicados; relatório do
    anunciante com fotos/período/ônibus + link compartilhável (RF13).
-6. **Branding (`/configuracoes`)**: logo PNG/JPG/SVG ≤ 300 KB (SVG sanitizado),
+5. **Branding (`/configuracoes`)**: logo PNG/JPG/SVG ≤ 300 KB (SVG sanitizado),
    cores `#RRGGBB`, nome de exibição; contraste texto/fundo calculado; vale
    para login, painel e PDFs; plano futuro: domínio próprio.
 

@@ -65,7 +65,7 @@ CONTROLEFROTA/
 │  │  ├─ layout.tsx                   nav global (9 telas) + fontes
 │  │  ├─ globals.css                  tokens CSS (--y --th --bg --ok --warn --bad...)
 │  │  ├─ page.tsx → Painel (§4.2)
-│  │  ├─ login/ · editar/ · frota/ · veiculacoes/
+│  │  ├─ login/ · editar/ · frota/
 │  │  ├─ os/ · importacao/ · relatorios/ · configuracoes/
 │  │  └─ api/ (9 rotas, seção 7)
 │  ├─ components/PainelClient.tsx      painel interativo (KPIs, +N, filtros, sort)
@@ -129,8 +129,7 @@ leitura (consulta).
 | `/` Painel | §4.2 (fiel ao protótipo) | header (logo/nome/data/tema + personalizar), 5 KPIs clicáveis que filtram, ocupação por posição (barras + contagem), próximos 6 clicáveis, tabela Nº/linha/anunciante(`+N` acessível)/painel/colocação/período/retirada/situação+dias, busca livre, filtros situação/linha, ordenação por coluna, contador `N de 171`; estados vazio/erro previstos; sem ranking (decisão do cliente) |
 | `/editar` | edição inline | mesma base do Painel com Editar/Salvar/Cancelar por veículo (linha, 4 posições, colocação, período; retirada recalculada RN1; situação ao vivo), marca ● nos editados, Restaurar por linha + descartar tudo, rascunho em localStorage (produção: PATCH onibus/veiculacoes + RF15) |
 | `/frota` | RF1/RF2 | lista número/linha/status/situação mídia (171) |
-| `/veiculacoes` | RF5/RF6 | início + período → fim calculado; validador de sobreposição; nota de renovação encadeada + calendário por linha (previsto na API) |
-| `/os` | RF10 | mobile-first: anexo de foto (câmera), concluir exige foto (400 sem `foto_url`) |
+| `/os` | RF10 | mobile-first: carro (171), data, cliente (sugestões), tipo instalação/retirada, foto obrigatória; concluir valida tudo e registra via `PATCH /api/os` |
 | `/importacao` | RF11 | upload .xlsx/.xls/.csv (lê via `xlsx`, cabeçalho configurável), datas texto/serial/Date, prévia com erros + junções + amostra, envio e confirmação (`POST /api/importacoes`, `POST .../:id/confirmar`) |
 | `/relatorios` | RF12/RF13 | 3 abas: vencidos (por atraso), por formato (4 tabelas + filtro formato/busca), livres (carros + vagas por formato); cada uma com CSV e PDF (`/api/exportar?tipo=&rel=[&pos=&q=]`) |
 | `/configuracoes` | §5 | nome de exibição; cores de todas as áreas (destaque, tabela, fundo, cartão, texto, secundário, bordas) com contraste WCAG AA ao vivo — situação (verde/âmbar/vermelho) fixa; logo PNG/JPG/SVG ≤300 KB com sanitização + prévia; salvar vale p/ toda empresa (`tenant_branding`, aplicado via `AplicarTema`); restaurar padrão |
