@@ -144,21 +144,39 @@ No dashboard do Supabase (Cloud ou local):
    - `logos` — logos PNG/JPG/SVG das empresas (até 300 KB, validado em app).
    - `fotos-os` — fotos de instalação/retirada da equipe de campo.
    - `importacoes` — planilhas enviadas (auditoria RF11/RF15).
-2. **Criar o tenant piloto + admin** (SQL Editor):
+2. **Criar o tenant piloto + admin** (SQL Editor). Primeiro crie o usuário em
+   **Authentication → Users** (e-mail/senha) e confirme o e-mail. Depois rode
+   este bloco — ele resolve os UUIDs sozinho (só troque o e-mail; não use
+   `<TENANT_UUID>` literal, o Postgres rejeita com `22P02 invalid input syntax for type uuid`):
 ```sql
-insert into tenants (nome, plano, fuso) values ('Expresso Vitória', 'basico', 'America/Bahia')
-returning id;  -- anote o UUID, ex.: 00000000-0000-0000-0000-000000000001
+do $$
+declare
+  v_tenant uuid;
+  v_user uuid;
+begin
+  insert into tenants (nome, plano, fuso)
+  values ('Expresso Vitória', 'basico', 'America/Bahia')
+  returning id into v_tenant;
 
--- depois de criar o usuário em Authentication → Users (e-mail/senha), vincule:
-insert into membros (tenant_id, user_id, papel)
-values ('<TENANT_UUID>', '<USER_UUID>', 'admin');
+  -- TROQUE pelo e-mail criado em Authentication > Users:
+  select id into v_user from auth.users where email = 'seu-email@exemplo.com';
 
-insert into tenant_branding (tenant_id, cor_primaria, cor_secundaria, nome_exibicao)
-values ('<TENANT_UUID>', '#F5B800', '#17212B', 'Expresso Vitória');
+  if v_user is null then
+    raise exception 'Usuario nao encontrado em auth.users. Crie em Authentication > Users e confirme o e-mail.';
+  end if;
 
-insert into tipos_posicao (tenant_id, nome)
-values ('<TENANT_UUID>','traseira'), ('<TENANT_UUID>','backseat'),
-       ('<TENANT_UUID>','painel'), ('<TENANT_UUID>','institucional');
+  insert into membros (tenant_id, user_id, papel)
+  values (v_tenant, v_user, 'admin');
+
+  insert into tenant_branding (tenant_id, cor_primaria, cor_secundaria, nome_exibicao)
+  values (v_tenant, '#F5B800', '#17212B', 'Expresso Vitória');
+
+  insert into tipos_posicao (tenant_id, nome)
+  values (v_tenant,'traseira'), (v_tenant,'backseat'),
+         (v_tenant,'painel'), (v_tenant,'institucional');
+
+  raise notice 'OK! tenant_id = %', v_tenant;
+end $$;
 ```
 3. **Policies de Storage** (exemplo mínimo — ajuste ao seu modelo):
    leitura/escrita autenticada restrita às pastas do tenant; URLs públicas
