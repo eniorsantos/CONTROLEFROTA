@@ -24,6 +24,16 @@ export default function RelatoriosPage() {
   const formatos = useMemo(() => relPorFormato(rows), [rows]);
   const livres = useMemo(() => relLivres(rows), [rows]);
   const vagas = useMemo(() => posicoesLivres(rows), [rows]);
+  const [fPos, setFPos] = useState("todas");
+  const [fBusca, setFBusca] = useState("");
+  const formatosFiltr = useMemo(() => formatos
+    .filter((g) => fPos === "todas" || g.pos === fPos)
+    .map((g) => ({
+      ...g,
+      itens: g.itens.filter((i) => !fBusca || [i.n, i.linha, i.anunciante].join(" ").toLowerCase().includes(fBusca.toLowerCase()))
+    })), [formatos, fPos, fBusca]);
+  const expFmt = (t: "csv" | "pdf") =>
+    `/api/exportar?tipo=${t}&rel=formatos&pos=${encodeURIComponent(fPos)}&q=${encodeURIComponent(fBusca)}`;
 
   const exp = (t: "csv" | "pdf", rel: string) => `/api/exportar?tipo=${t}&rel=${rel}`;
 
@@ -62,10 +72,20 @@ export default function RelatoriosPage() {
       {aba === "formatos" ? (
         <section>
           <h2 className="font-cond" style={{ fontSize: 22 }}>Clientes em veiculação por formato</h2>
-          <p><a href={exp("csv", "formatos")}>Baixar CSV</a> · <a href={exp("pdf", "formatos")}>Abrir PDF</a></p>
-          {formatos.map((g) => (
+          <div style={{ display: "flex", gap: 8, flexWrap: "wrap", alignItems: "center", marginBottom: 8 }}>
+            <select aria-label="Filtrar por formato" value={fPos} onChange={(e) => setFPos(e.target.value)}
+              style={{ padding: "8px 10px", border: "1px solid var(--line)", borderRadius: 6, background: "var(--card)", color: "var(--ink)" }}>
+              <option value="todas">Todos os formatos</option>
+              {formatos.map((g) => <option key={g.pos} value={g.pos}>{g.pos} ({g.total})</option>)}
+            </select>
+            <input type="search" placeholder="Buscar ônibus, linha ou anunciante" aria-label="Buscar no relatório"
+              value={fBusca} onChange={(e) => setFBusca(e.target.value)}
+              style={{ padding: "8px 10px", border: "1px solid var(--line)", borderRadius: 6, background: "var(--card)", color: "var(--ink)", minWidth: 240 }} />
+          </div>
+          <p><a href={expFmt("csv")}>Baixar CSV (com filtro)</a> · <a href={expFmt("pdf")}>Abrir PDF (com filtro)</a></p>
+          {formatosFiltr.map((g) => (
             <div key={g.pos} style={{ marginBottom: 16 }}>
-              <h3 className="font-cond" style={{ fontSize: 18 }}>{g.pos} ({g.total})</h3>
+              <h3 className="font-cond" style={{ fontSize: 18 }}>{g.pos} ({g.itens.length})</h3>
               <div style={{ overflowX: "auto", background: "var(--card)", border: "1px solid var(--line)", borderRadius: 6 }}>
                 <table style={{ width: "100%", minWidth: 600, fontSize: 14, borderCollapse: "collapse" }}>
                   <thead><tr>{["Nº", "Linha", "Anunciante", "Retirada"].map((h) => <th key={h} style={th}>{h}</th>)}</tr></thead>

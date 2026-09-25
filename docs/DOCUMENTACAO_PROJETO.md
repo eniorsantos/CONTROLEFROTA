@@ -132,7 +132,7 @@ leitura (consulta).
 | `/veiculacoes` | RF5/RF6 | início + período → fim calculado; validador de sobreposição; nota de renovação encadeada + calendário por linha (previsto na API) |
 | `/os` | RF10 | mobile-first: anexo de foto (câmera), concluir exige foto (400 sem `foto_url`) |
 | `/importacao` | RF11 | upload .xlsx/.xls/.csv (lê via `xlsx`, cabeçalho configurável), datas texto/serial/Date, prévia com erros + junções + amostra, envio e confirmação (`POST /api/importacoes`, `POST .../:id/confirmar`) |
-| `/relatorios` | RF12/RF13 | 3 abas: vencidos (por atraso), por formato (4 tabelas + contagens), livres (carros + vagas por formato); cada uma com CSV e PDF (`/api/exportar?tipo=&rel=`) |
+| `/relatorios` | RF12/RF13 | 3 abas: vencidos (por atraso), por formato (4 tabelas + filtro formato/busca), livres (carros + vagas por formato); cada uma com CSV e PDF (`/api/exportar?tipo=&rel=[&pos=&q=]`) |
 | `/configuracoes` | §5 + planos | cores com validação hex + contraste AA ao vivo, teste de sanitização SVG, tabela de planos fixos |
 
 Design system (§4.3): tokens `--y --th --bg --card --ink --mut --line --ok

@@ -8,7 +8,7 @@ import {
 } from "@/lib/exportacao";
 import { fmtBR } from "@/lib/vencimentos";
 
-// GET /api/exportar?tipo=csv|pdf&rel=todos|vencidos|formatos|livres
+// GET /api/exportar?tipo=csv|pdf&rel=todos|vencidos|formatos|livres[&pos=&q= (só formatos)]
 export async function GET(req: Request) {
   const u = new URL(req.url);
   const tipo = u.searchParams.get("tipo") || "csv";
@@ -25,7 +25,12 @@ export async function GET(req: Request) {
     return new NextResponse(paraCSVVencidos(v), { headers: csv("vencidos") });
   }
   if (rel === "formatos") {
-    const itens = relPorFormato(rows).flatMap((g) => g.itens);
+    const pos = u.searchParams.get("pos") || "todas";
+    const q = (u.searchParams.get("q") || "").toLowerCase();
+    const itens = relPorFormato(rows)
+      .filter((g) => pos === "todas" || g.pos === pos)
+      .flatMap((g) => g.itens)
+      .filter((i) => !q || [i.n, i.linha, i.anunciante].join(" ").toLowerCase().includes(q));
     if (tipo === "pdf") return new NextResponse(paraHTMLRelatorio("Veiculação por formato", "Expresso Vitória",
       ["Formato", "Nº", "Linha", "Anunciante", "Retirada"],
       itens.map((i) => [i.pos, i.n, i.linha, i.anunciante, fmtBR(i.retirada)])), { headers: pdf });
