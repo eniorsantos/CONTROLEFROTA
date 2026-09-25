@@ -19,8 +19,8 @@ Navegador (Painel, Frota, OS mobile, Configurações)
    │ HTTPS
    ▼
 Next.js 14 App Router (Vercel ou localhost:3000)
-   ├─ Páginas: /login / (painel) /frota /veiculacoes /disponibilidade
-   │           /anunciantes /os /importacao /relatorios /configuracoes
+   ├─ Páginas: /login / (painel) /editar /frota /veiculacoes
+   │           /os /importacao /relatorios /configuracoes
    ├─ API: /api/onibus /api/veiculacoes /api/disponibilidade /api/painel/resumo
    │        /api/os /api/importacoes /api/configuracoes/aparencia
    │        /api/exportar /api/alertas/previa  (validação Zod + filtro por tenant)
@@ -232,8 +232,7 @@ operacao (OS/fotos/baixa) · leitura (só consulta).
 1. **Painel (`/`)**: semáforo diário — `Vencido` (retirar + OS), `Vence em 7 dias`
    (renovar/negociar), `Em campanha`, `Sem data`, `Disponível` (vender).
    KPIs filtram a tabela; `+N` expande os demais anunciantes do ônibus.
-2. **Disponibilidade (`/disponibilidade`)**: filtrar por linha/posição/período
-   antes de vender (baixados excluídos — RN6).
+2. **Editar (`/editar`)**: ajuste direto por veículo (linha, posições, colocação, período) com retirada recalculada; use a SyncBar para enviar ao Supabase.
 3. **Veiculações (`/veiculacoes`)**: fim sempre calculado (início + período);
    renovar encadeia (início = fim anterior) preservando histórico/auditoria.
 4. **OS (`/os`)**: instalação e retirada geram OS com prazo; campo conclui com
