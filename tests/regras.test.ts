@@ -18,6 +18,16 @@ describe("importação (RF11/§6.4)", () => {
   it("sugere junção Bahiaha/Bahia", () => {
     expect(parecidos("Faculdade Bahiaha", "Faculdade Bahia")).toBe(true);
   });
+  it("lê datas em serial do Excel e Date", () => {
+    const p = previaImportacao([
+      { B: 1, C: "A1-x", D: "Cli", J: 45910, K: 30, L: 45940 },
+      { B: 2, C: "A2-y", D: "Cli", J: new Date(2026, 8, 8), K: 30, L: "08/10/2026" }
+    ]);
+    expect(p.validas[0].d).toMatch(/^\d{4}-\d{2}-\d{2}$/);
+    expect(p.validas[0].f > p.validas[0].d).toBe(true);
+    expect(p.validas[1].d).toBe("2026-09-08");
+    expect(p.validas[1].f).toBe("2026-10-08");
+  });
 });
 
 describe("branding (aceite #5)", () => {

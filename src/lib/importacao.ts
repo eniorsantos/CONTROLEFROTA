@@ -3,7 +3,7 @@
 // G→painel, I→cliente retirada (institucional), J→início, K→período, L→fim.
 import type { LinhaPrototipo } from "./tipos";
 
-export interface LinhaBruta { [col: string]: string | number | undefined; }
+export interface LinhaBruta { [col: string]: string | number | Date | undefined; }
 export interface ErroImport { linha: number; campo: string; msg: string; }
 export interface PreviaImport {
   validas: LinhaPrototipo[];
@@ -19,6 +19,19 @@ function limp(v: unknown): string {
 }
 
 function dataISO(v: unknown): string {
+  // Date (ex.: xlsx com cellDates:true) — usa getters locais p/ não deslocar o dia
+  if (v instanceof Date && !Number.isNaN(+v)) {
+    const m = String(v.getMonth() + 1).padStart(2, "0");
+    const d = String(v.getDate()).padStart(2, "0");
+    return `${v.getFullYear()}-${m}-${d}`;
+  }
+  // serial do Excel (dias desde 1899-12-30) — fórmula em UTC
+  if (typeof v === "number" && Number.isFinite(v) && v > 0) {
+    const dt = new Date(Math.round((v - 25569) * 86400000));
+    const m = String(dt.getUTCMonth() + 1).padStart(2, "0");
+    const d = String(dt.getUTCDate()).padStart(2, "0");
+    return `${dt.getUTCFullYear()}-${m}-${d}`;
+  }
   const s = String(v ?? "").trim();
   if (!s) return "";
   // aceita yyyy-mm-dd ou dd/mm/aaaa
@@ -56,7 +69,7 @@ export function previaImportacao(linhas: LinhaBruta[], mapa = { B: "B", C: "C", 
     const temCliente = Boolean(t || back || painel || cli);
     if (!nro) erros.push({ linha: idx + 1, campo: "B", msg: "Número do ônibus ausente." });
     if (temCliente && !d) erros.push({ linha: idx + 1, campo: "J", msg: "Linha com cliente mas sem data de colocação." });
-    if (!Number.isFinite(nro)) return;
+    if (!Number.isFinite(nro) || nro <= 0) return;
     validas.push({
       n: nro, l: linha,
       t, b: back, p: painel, i: "", r: "",

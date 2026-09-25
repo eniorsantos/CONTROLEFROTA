@@ -21,6 +21,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
           <div style={{ maxWidth: 1200, margin: "0 auto", padding: "8px 16px", display: "flex", gap: 12, flexWrap: "wrap", fontSize: 14 }}>
             {[
               ["/", "Painel"],
+              ["/editar", "Editar"],
               ["/frota", "Frota"],
               ["/veiculacoes", "Veiculações"],
               ["/disponibilidade", "Disponibilidade"],

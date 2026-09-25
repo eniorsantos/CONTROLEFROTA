@@ -127,12 +127,13 @@ leitura (consulta).
 |---|---|---|
 | `/login` | §4.1.1 | e-mail+senha, recuperação, convite (texto + form cliente) |
 | `/` Painel | §4.2 (fiel ao protótipo) | header (logo/nome/data/tema + personalizar), 5 KPIs clicáveis que filtram, ocupação por posição (barras + contagem), próximos 6 clicáveis, tabela Nº/linha/anunciante(`+N` acessível)/painel/colocação/período/retirada/situação+dias, busca livre, filtros situação/linha, ordenação por coluna, contador `N de 171`; estados vazio/erro previstos; sem ranking (decisão do cliente) |
+| `/editar` | edição inline | mesma base do Painel com Editar/Salvar/Cancelar por veículo (linha, 4 posições, colocação, período; retirada recalculada RN1; situação ao vivo), marca ● nos editados, Restaurar por linha + descartar tudo, rascunho em localStorage (produção: PATCH onibus/veiculacoes + RF15) |
 | `/frota` | RF1/RF2 | lista número/linha/status/situação mídia (171) |
 | `/veiculacoes` | RF5/RF6 | início + período → fim calculado; validador de sobreposição; nota de renovação encadeada + calendário por linha (previsto na API) |
 | `/disponibilidade` | RF8 | filtro linha/posição (+ período na API), contagem de livres |
 | `/anunciantes` | RF4/RF5 | N anunciantes da planilha + link p/ relatório (RF13) |
 | `/os` | RF10 | mobile-first: anexo de foto (câmera), concluir exige foto (400 sem `foto_url`) |
-| `/importacao` | RF11 | explicação do mapa, simulação de prévia (válidas/erros/junções) |
+| `/importacao` | RF11 | upload .xlsx/.xls/.csv (lê via `xlsx`, cabeçalho configurável), datas texto/serial/Date, prévia com erros + junções + amostra, envio e confirmação (`POST /api/importacoes`, `POST .../:id/confirmar`) |
 | `/relatorios` | RF12/RF13 | botões CSV/PDF (com filtros), amostra, relatório anunciante |
 | `/configuracoes` | §5 + planos | cores com validação hex + contraste AA ao vivo, teste de sanitização SVG, tabela de planos fixos |
 
