@@ -1,6 +1,7 @@
 "use client";
 import { useMemo, useState, useEffect, Fragment } from "react";
-import { FROTA } from "@/data/frota";
+import { carregarBase, EVENTO_NUVEM } from "@/lib/fonte";
+import SyncBar from "@/components/SyncBar";
 import { montarPainel, resumoPainel, ocupacaoPorPosicao, proximosAVencer } from "@/lib/painel";
 import { fmtBR } from "@/lib/vencimentos";
 import type { Semaforo } from "@/lib/tipos";
@@ -16,7 +17,14 @@ const COR: Record<Semaforo, string> = {
 type SortK = "n" | "l" | "m" | "p" | "d" | "e" | "f" | "x";
 
 export default function PainelClient() {
-  const rows = useMemo(() => montarPainel(FROTA), []);
+  const [ver, setVer] = useState(0);
+  useEffect(() => {
+    const f = () => setVer((v) => v + 1);
+    window.addEventListener(EVENTO_NUVEM, f);
+    return () => window.removeEventListener(EVENTO_NUVEM, f);
+  }, []);
+  const base = useMemo(() => carregarBase(), [ver]);
+  const rows = useMemo(() => montarPainel(base), [base]);
   const [q, setQ] = useState("");
   const [st, setSt] = useState("");
   const [ln, setLn] = useState("");
@@ -86,6 +94,7 @@ export default function PainelClient() {
         <p style={{ color: "var(--mut)" }}>Prévia ao vivo. Ao salvar vale para toda a empresa (tabela tenant_branding).</p>
       </details>
 
+      <SyncBar dados={base} />
       <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit,minmax(150px,1fr))", gap: 12, margin: "18px 0" }}>
         {kpis.map((k) => (
           <button key={k[0]} onClick={() => setSt(k[2] === "Total" ? "" : k[2])} style={{ textAlign: "left", background: "var(--card)", border: "1px solid var(--line)", borderLeft: `6px solid ${k[2] === "Total" ? "var(--ink)" : COR[k[2] as Semaforo]}`, borderRadius: 6, padding: "12px 14px", cursor: "pointer", color: "var(--ink)" }}>

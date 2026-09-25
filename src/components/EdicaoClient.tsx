@@ -1,6 +1,7 @@
 "use client";
 import { useMemo, useState, useEffect } from "react";
-import { FROTA } from "@/data/frota";
+import { carregarBase, autoLigado, EVENTO_NUVEM } from "@/lib/fonte";
+import SyncBar from "@/components/SyncBar";
 import { montarPainel } from "@/lib/painel";
 import { fmtBR, fimVeiculacao } from "@/lib/vencimentos";
 import type { LinhaPrototipo, Semaforo } from "@/lib/tipos";
@@ -28,6 +29,14 @@ export default function EdicaoClient() {
   const [editN, setEditN] = useState<number | null>(null);
   const [draft, setDraft] = useState<Draft>({ l: "", t: "", b: "", p: "", c: "", d: "", e: 30 });
   const [erro, setErro] = useState("");
+  const [syncMsg, setSyncMsg] = useState("");
+  const [ver, setVer] = useState(0);
+
+  useEffect(() => {
+    const f = () => setVer((v) => v + 1);
+    window.addEventListener(EVENTO_NUVEM, f);
+    return () => window.removeEventListener(EVENTO_NUVEM, f);
+  }, []);
 
   useEffect(() => {
     try {
@@ -40,8 +49,9 @@ export default function EdicaoClient() {
   }, [over]);
 
   const base: LinhaPrototipo[] = useMemo(
-    () => FROTA.map((r) => (over[r.n] ? { ...r, ...over[r.n] } : r)),
-    [over]
+    () => carregarBase().map((r) => (over[r.n] ? { ...r, ...over[r.n] } : r)),
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    [over, ver]
   );
   const rows = useMemo(() => montarPainel(base), [base]);
   const filtradas = rows.filter((r) => !q || Object.values(r).join(" ").toLowerCase().includes(q.toLowerCase()));
@@ -60,6 +70,18 @@ export default function EdicaoClient() {
     if (!Number.isFinite(draft.e) || draft.e <= 0) { setErro("Período deve ser maior que zero."); return; }
     setOver((p) => ({ ...p, [editN]: { ...draft } }));
     setEditN(null); setErro("");
+    // sincronização automática: envia a base ao Supabase ao salvar
+    if (autoLigado()) {
+      const atual = carregarBase().map((r) => (r.n === editN ? { ...r, ...draft } : r));
+      setSyncMsg("Sincronizando com o Supabase…");
+      fetch("/api/sync", {
+        method: "POST", headers: { "content-type": "application/json" },
+        body: JSON.stringify({ linhas: atual })
+      }).then(async (r) => {
+        const j = await r.json().catch(() => ({}));
+        setSyncMsg(r.ok ? `Sincronizado: ${j.veiculacoes ?? 0} veiculações.` : "Falha na sync automática: " + (j.error ?? r.status));
+      }).catch((e) => setSyncMsg("Falha na sync automática: " + (e as Error).message));
+    }
   }
 
   function restaurar(n: number) {
@@ -81,6 +103,8 @@ export default function EdicaoClient() {
         {editados ? <> <b>{editados} editado(s)</b> <button onClick={() => { setOver({}); setEditN(null); }}>Descartar todas as edições</button></> : " Nenhuma edição ainda."}
       </p>
       <p style={{ color: "var(--mut)", fontSize: 13 }}>Rascunho salvo neste navegador; em produção, salvar grava via <code>PATCH /api/onibus/:id</code> e <code>PATCH /api/veiculacoes/:id</code> com auditoria (RF15).</p>
+      <SyncBar dados={base} />
+      {syncMsg ? <p role="status" style={{ fontSize: 13 }}>{syncMsg}</p> : null}
       <input type="search" placeholder="Buscar ônibus, linha ou cliente" aria-label="Buscar" value={q}
         onChange={(e) => setQ(e.target.value)}
         style={{ padding: "8px 10px", border: "1px solid var(--line)", borderRadius: 6, background: "var(--card)", color: "var(--ink)", minWidth: 260, marginBottom: 10 }} />

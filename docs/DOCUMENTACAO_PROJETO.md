@@ -156,8 +156,16 @@ cards, foco visível, mobile-first no campo.
 | `/api/configuracoes/aparencia` | GET/PUT/POST | PUT valida `#RRGGBB`; POST logo (tipo + 300KB + SVG sanitizado) | branding / `{ok}` / 400 |
 | `/api/exportar` | GET | `?tipo=csv\|pdf` (+ filtros) | CSV download / HTML imprimível |
 | `/api/alertas/previa` | GET | — | total + amostra (cron usa a mesma lógica) |
+| `/api/sync` | GET/POST | GET `?tenant_id=` (pull: banco → planilha); POST `{tenant_id?, linhas[]}` (push: upserts + recria veiculações ativas). Exige `SUPABASE_SERVICE_ROLE_KEY` (503 sem ela); `tenant_id` inválido → 400 | `{tenant, total, linhas}` / `{ok, onibus, veiculacoes}` |
 
 Todas exigem auth, conferem papel e filtram por empresa (RLS no banco).
+
+## 7b. Sincronização Supabase (manual + automática)
+
+- **Manual**: barra `SyncBar` no Painel e no Editar — `↓ Baixar` (`GET /api/sync` → base local `frota-cloud`) e `↑ Enviar` (`POST /api/sync`).
+- **Automática**: toggle na `SyncBar`; ligado, cada Salvar no `/editar` envia a base ao Supabase.
+- **Mapeamento** (`src/lib/sync-map.ts`, com testes): linhas↔`linhas`, nº↔`onibus`, nomes↔`anunciantes` (+ campanha `Geral`), t/b/c↔veiculações por posição, painel↔detalhe da posição; volta com principal = vence primeiro. Roundtrip validado contra banco real (push 2/pull fiel/limpeza).
+- Requer `SUPABASE_SERVICE_ROLE_KEY` no servidor; sem ela a API responde 503 explicativo.
 
 ## 8. Testes e build (estado atual verificado)
 
